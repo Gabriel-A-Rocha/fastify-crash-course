@@ -21,6 +21,9 @@ const getItemsOptions = {
       },
     },
   },
+  handler: (request, reply) => {
+    reply.send(items);
+  },
 };
 
 const getItemOptions = {
@@ -29,20 +32,19 @@ const getItemOptions = {
       200: ItemSchema,
     },
   },
+  handler: (request, reply) => {
+    const { itemID } = request.params;
+    const record = items.find((item) => item.id === itemID);
+    reply.send({ ...record });
+  },
 };
 
 function itemsRoutes(fastify, options, done) {
   // get all items
-  fastify.get("/items", getItemsOptions, (request, reply) => {
-    reply.send(items);
-  });
+  fastify.get("/items", getItemsOptions);
 
   // get single item
-  fastify.get("/items/:itemID", getItemOptions, (request, reply) => {
-    const { itemID } = request.params;
-    const record = items.find((item) => item.id === itemID);
-    reply.send({ ...record });
-  });
+  fastify.get("/items/:itemID", getItemOptions);
 
   done();
 }
